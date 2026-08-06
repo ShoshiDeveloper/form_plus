@@ -19,7 +19,6 @@ FormPlus example:
 
 FormFieldPlus example:
 ```dart
-
 class Input extends StatefulWidget {
   const Input({super.key});
 
@@ -34,8 +33,8 @@ class _InputState extends State<Input> {
   Widget build(BuildContext context) {
     return FormFieldPlus<bool>(
       value: value,
-      autovalidateMode: FormPlusAutovalidateMode.disabled,
-      validator: (final value) => (value ?? false) ? null : 'some error when value = false',
+      autovalidateMode: FormPlusAutovalidateMode.onChanged,
+      validator: InputValidator(),
       builder: (error) => Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 8,
@@ -46,8 +45,8 @@ class _InputState extends State<Input> {
                 value = !value;
               });
 
-              final error = FormPlus.maybeOf(context)?.validate();
-              print(await error);
+              // final error = FormPlus.maybeOf(context)?.validate();
+              // print(await error);
             },
             child: Container(width: 32, height: 32, color: value ? Colors.green : Colors.red),
           ),
@@ -57,4 +56,14 @@ class _InputState extends State<Input> {
     );
   }
 }
+
+class InputValidator extends FormValidatorBase<bool> {
+  const InputValidator({super.forceErrorText, super.validatorErrorText});
+
+  @override
+  FutureOr<String?>? call(bool? value) {
+    return (value ?? false) ? null : 'Some error when value = false';
+  }
+}
+
 ```
