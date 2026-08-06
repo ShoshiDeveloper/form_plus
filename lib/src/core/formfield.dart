@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:form_plus/src/form.dart';
+import 'package:form_plus/src/core/form.dart';
+import 'package:form_plus/src/validators/form_validator_base.dart';
 
 enum FormPlusAutovalidateMode {
   /// Use FormPlus.maybeOf(context)?.validate() for validate the form
@@ -25,7 +26,6 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
     required this.builder,
     required this.validator,
     this.value,
-    this.forceErrorText,
     this.autovalidateMode = FormPlusAutovalidateMode.disabled,
     this.observedFocus,
     super.key,
@@ -34,19 +34,16 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
   /// Set actual value from field
   final T? value;
 
-  /// Set an error to be returned immediately without validation.
-  final String? forceErrorText;
-
-  /// Build widget by error text from validator
-  final Widget Function(String? error) builder;
-
-  /// Validate value from field by validator function
-  final FutureOr<String?>? Function(T? value) validator;
-
-  final FormPlusAutovalidateMode autovalidateMode;
+  /// Class with validator that will be validate formField
+  final FormValidatorBase validator;
 
   /// Set FocusNode from field for validate form on onUnfocus and onFocus
   final FocusNode? observedFocus;
+
+  final FormPlusAutovalidateMode autovalidateMode;
+
+  /// Build widget by error text from validator
+  final Widget Function(String? error) builder;
 
   @override
   State<FormFieldPlus<T>> createState() => FormFieldPlusState<T>();
@@ -101,7 +98,8 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _error,
-      builder: (final context, final value, _) => widget.builder(widget.forceErrorText ?? value),
+      builder: (final context, final value, _) =>
+          widget.builder(widget.validator.forceErrorText ?? value),
     );
   }
 

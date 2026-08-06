@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:form_plus/src/formfield.dart';
+import 'package:form_plus/src/core/formfield.dart';
 
 @protected
 class FormPlusScope extends InheritedWidget {
