@@ -11,7 +11,13 @@ enum FormPlusAutovalidateMode {
   always,
 
   /// Form will be validate when formFieldPlus.value was changed and it detected on didUpdateWidget
-  changed,
+  onChanged,
+
+  /// Form will be validate when focus was unfocused
+  onUnfocus,
+
+  /// Form will be validate when focus was focused
+  onFocus,
 }
 
 class FormFieldPlus<T extends Object?> extends StatefulWidget {
@@ -21,6 +27,7 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
     this.value,
     this.forceErrorText,
     this.autovalidateMode = FormPlusAutovalidateMode.disabled,
+    this.observedFocus,
     super.key,
   });
 
@@ -38,6 +45,9 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
 
   final FormPlusAutovalidateMode autovalidateMode;
 
+  /// Set FocusNode from field for validate form on onUnfocus and onFocus
+  final FocusNode? observedFocus;
+
   @override
   State<FormFieldPlus<T>> createState() => FormFieldPlusState<T>();
 }
@@ -49,6 +59,12 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.autovalidateMode == FormPlusAutovalidateMode.onFocus ||
+        widget.autovalidateMode == FormPlusAutovalidateMode.onUnfocus) {
+      widget.observedFocus?.addListener(focusHandler);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FormPlus.maybeOf(context)?.register(this);
       if (widget.autovalidateMode == FormPlusAutovalidateMode.always) {
@@ -69,9 +85,16 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
     if (widget.autovalidateMode == FormPlusAutovalidateMode.always) {
       validate();
     } else if (widget.value != oldWidget.value &&
-        widget.autovalidateMode == FormPlusAutovalidateMode.changed) {
+        widget.autovalidateMode == FormPlusAutovalidateMode.onChanged) {
       validate();
     }
+  }
+
+  @override
+  void dispose() {
+    _error.dispose();
+    widget.observedFocus?.removeListener(focusHandler);
+    super.dispose();
   }
 
   @override
@@ -80,5 +103,17 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
       valueListenable: _error,
       builder: (final context, final value, _) => widget.builder(widget.forceErrorText ?? value),
     );
+  }
+
+  void focusHandler() {
+    final hasFocus = widget.observedFocus?.hasFocus ?? false;
+
+    final hasFocusAndModeFocus =
+        hasFocus && widget.autovalidateMode == FormPlusAutovalidateMode.onFocus;
+
+    final hasNotFocusAndModeUnfocus =
+        !hasFocus && widget.autovalidateMode == FormPlusAutovalidateMode.onUnfocus;
+
+    if (hasFocusAndModeFocus || hasNotFocusAndModeUnfocus) validate();
   }
 }
