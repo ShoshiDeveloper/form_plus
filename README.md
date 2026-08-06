@@ -1,39 +1,60 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+# Form Plus
 
 ## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Default Form with async functionality.
 
 ## Usage
+Use FormPlus for create Form base and FormFieldPlus for your components;
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
 
+FormPlus example: 
 ```dart
-const like = 'sample';
+ Widget build(BuildContext context) {
+    return Scaffold(
+      body: FormPlus(child: Center(child: Input())),
+    );
+  }
 ```
 
-## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+FormFieldPlus example:
+```dart
+
+class Input extends StatefulWidget {
+  const Input({super.key});
+
+  @override
+  State<Input> createState() => _InputState();
+}
+
+class _InputState extends State<Input> {
+  bool value = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FormFieldPlus<bool>(
+      value: value,
+      autovalidateMode: FormPlusAutovalidateMode.disabled,
+      validator: (final value) => (value ?? false) ? null : 'some error when value = false',
+      builder: (error) => Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          GestureDetector(
+            onTap: () async {
+              setState(() {
+                value = !value;
+              });
+
+              final error = FormPlus.maybeOf(context)?.validate();
+              print(await error);
+            },
+            child: Container(width: 32, height: 32, color: value ? Colors.green : Colors.red),
+          ),
+          if (error != null) Text(error, style: TextStyle(color: Colors.red)),
+        ],
+      ),
+    );
+  }
+}
+```
