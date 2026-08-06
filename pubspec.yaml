@@ -1,0 +1,20 @@
+name: form_plus
+description: "Form with async support"
+version: 0.0.1
+homepage: shoshi.tech
+github: https://github.com/ShoshiDeveloper/form_plus.git
+
+environment:
+  sdk: ^3.11.5
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
