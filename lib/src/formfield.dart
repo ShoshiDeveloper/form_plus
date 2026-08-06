@@ -14,29 +14,6 @@ enum FormPlusAutovalidateMode {
   changed,
 }
 
-class FormPlusState extends State<FormPlus> {
-  final fields = <FormFieldPlusState>[];
-
-  void register(FormFieldPlusState formField) {
-    fields.add(formField);
-  }
-
-  FutureOr<bool> validate() async {
-    for (final field in fields) {
-      final error = await field.validate();
-
-      if (error != null) false;
-    }
-
-    return true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FormPlusScope(formState: this, child: widget.child);
-  }
-}
-
 class FormFieldPlus<T extends Object?> extends StatefulWidget {
   const FormFieldPlus({
     required this.builder,
