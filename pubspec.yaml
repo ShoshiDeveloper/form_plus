@@ -1,8 +1,8 @@
 name: form_plus
 description: "Form with async support"
-version: 0.0.3
+version: 0.0.3+1
 homepage: https://shoshi.tech
-github: https://github.com/ShoshiDeveloper/form_plus.git
+repository: https://github.com/ShoshiDeveloper/form_plus.git
 
 environment:
   sdk: ^3.11.5
