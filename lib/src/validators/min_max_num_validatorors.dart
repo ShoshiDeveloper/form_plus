@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:form_plus/form_plus.dart';
 
-class MaxNumValidator extends FormValidatorBase<num> {
-  const MaxNumValidator({
+class MinMaxNumValidator extends FormValidatorBase<num> {
+  const MinMaxNumValidator({
     required this.max,
     required this.min,
     this.withEqual = true,
