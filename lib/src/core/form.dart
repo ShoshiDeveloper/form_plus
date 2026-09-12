@@ -38,7 +38,7 @@ class FormPlusState extends State<FormPlus> {
     for (final field in fields) {
       final error = await field.validate();
 
-      if (error != null) false;
+      if (error != null) return false;
     }
 
     return true;
