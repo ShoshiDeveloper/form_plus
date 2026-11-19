@@ -25,14 +25,14 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
   const FormFieldPlus({
     required this.builder,
     required this.validator,
-    this.value,
+    this.initialValue,
     this.autovalidateMode = FormPlusAutovalidateMode.disabled,
     this.observedFocus,
     super.key,
   });
 
   /// Set actual value from field
-  final T? value;
+  final T? initialValue;
 
   /// Class with validator that will be validate formField
   final FormValidatorBase<T>? validator;
@@ -43,7 +43,7 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
   final FormPlusAutovalidateMode autovalidateMode;
 
   /// Build widget by error text from validator
-  final Widget Function(String? error) builder;
+  final Widget Function(String? error, FormFieldPlusStateContext field) builder;
 
   @override
   State<FormFieldPlus<T>> createState() => FormFieldPlusState<T>();
@@ -52,6 +52,13 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
 @protected
 class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
   final ValueNotifier<String?> _error = ValueNotifier(null);
+
+  late T? value = widget.initialValue;
+  late final fieldContext = FormFieldPlusStateContext<T>(
+    onUpdateValue: (value) {
+      this.value = value;
+    },
+  );
 
   @override
   void initState() {
@@ -75,7 +82,7 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
 
     if (validator == null) return null;
 
-    _error.value = await validator.call(widget.value);
+    _error.value = await validator.call(widget.initialValue);
 
     return _error.value;
   }
@@ -85,7 +92,7 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
     super.didUpdateWidget(oldWidget);
     if (widget.autovalidateMode == FormPlusAutovalidateMode.always) {
       validate();
-    } else if (widget.value != oldWidget.value &&
+    } else if (widget.initialValue != oldWidget.initialValue &&
         widget.autovalidateMode == FormPlusAutovalidateMode.onChanged) {
       validate();
     }
@@ -103,7 +110,7 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
     return ValueListenableBuilder(
       valueListenable: _error,
       builder: (final context, final value, _) =>
-          widget.builder(widget.validator?.forceErrorText ?? value),
+          widget.builder(widget.validator?.forceErrorText ?? value, fieldContext),
     );
   }
 
@@ -119,4 +126,13 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
 
     if (hasFocusAndModeFocus || hasNotFocusAndModeUnfocus) validate();
   }
+}
+
+class FormFieldPlusStateContext<T extends Object?> {
+  const FormFieldPlusStateContext({required void Function(T) onUpdateValue})
+    : _onUpdateValue = onUpdateValue;
+
+  final ValueChanged<T> _onUpdateValue;
+
+  void updateValue(T value) => _onUpdateValue.call(value);
 }

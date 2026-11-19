@@ -45,7 +45,7 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
               Text('Create an account', style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 24),
               FormFieldPlus<String>(
-                value: email,
+                initialValue: email,
                 autovalidateMode: FormPlusAutovalidateMode.onChanged,
                 validator: MultiValidator<String>(
                   validators: [
@@ -53,7 +53,7 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
                     const EmailValidator(validatorErrorText: 'Enter a valid email'),
                   ],
                 ),
-                builder: (error) => _Field(
+                builder: (error, field) => _Field(
                   label: 'Email',
                   error: error,
                   child: TextField(
@@ -64,7 +64,7 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
               ),
               const SizedBox(height: 16),
               FormFieldPlus<String>(
-                value: password,
+                initialValue: password,
                 autovalidateMode: FormPlusAutovalidateMode.onChanged,
                 validator: CallbackValidator<String>(
                   callback: (value) async {
@@ -75,13 +75,14 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
                     return null;
                   },
                 ),
-                builder: (error) => _Field(
+                builder: (error, field) => _Field(
                   label: 'Password',
                   error: error,
                   child: TextField(
                     obscureText: true,
                     onChanged: (value) => setState(() {
                       password = value;
+                      field.updateValue(value);
                     }),
                   ),
                 ),

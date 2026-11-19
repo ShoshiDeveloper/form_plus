@@ -6,5 +6,10 @@ class RequiredValidator<T extends Object?> extends FormValidatorBase<T> {
   const RequiredValidator({super.forceErrorText, super.validatorErrorText});
 
   @override
-  FutureOr<String?>? call(T? value) => value != null ? validatorErrorText : null;
+  FutureOr<String?>? call(T? value) {
+    if (value is String) return value.isEmpty ? validatorErrorText : null;
+    if (value is bool) return !value ? validatorErrorText : null;
+
+    return value != null ? validatorErrorText : null;
+  }
 }

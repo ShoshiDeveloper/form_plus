@@ -11,3 +11,4 @@ export 'package:form_plus/src/validators/max_num_validatorors.dart';
 export 'package:form_plus/src/validators/min_max_num_validatorors.dart';
 export 'package:form_plus/src/validators/min_num_validatorors.dart';
 export 'package:form_plus/src/validators/multi_validator.dart';
+export 'package:form_plus/src/validators/force_error_validator.dart';
