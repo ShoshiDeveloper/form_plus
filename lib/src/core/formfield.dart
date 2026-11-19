@@ -82,7 +82,7 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
 
     if (validator == null) return null;
 
-    _error.value = await validator.call(widget.initialValue);
+    _error.value = await validator.call(value);
 
     return _error.value;
   }

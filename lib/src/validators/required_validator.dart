@@ -7,9 +7,9 @@ class RequiredValidator<T extends Object?> extends FormValidatorBase<T> {
 
   @override
   FutureOr<String?>? call(T? value) {
-    if (value is String) return value.isEmpty ? validatorErrorText : null;
+    if (value is String) return value.trim().isEmpty ? validatorErrorText : null;
     if (value is bool) return !value ? validatorErrorText : null;
 
-    return value != null ? validatorErrorText : null;
+    return value == null ? validatorErrorText : null;
   }
 }
