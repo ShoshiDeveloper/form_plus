@@ -35,7 +35,7 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
   final T? value;
 
   /// Class with validator that will be validate formField
-  final FormValidatorBase? validator;
+  final FormValidatorBase<T>? validator;
 
   /// Set FocusNode from field for validate form on onUnfocus and onFocus
   final FocusNode? observedFocus;
