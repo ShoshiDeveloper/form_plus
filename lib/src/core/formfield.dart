@@ -35,7 +35,7 @@ class FormFieldPlus<T extends Object?> extends StatefulWidget {
   final T? value;
 
   /// Class with validator that will be validate formField
-  final FormValidatorBase validator;
+  final FormValidatorBase? validator;
 
   /// Set FocusNode from field for validate form on onUnfocus and onFocus
   final FocusNode? observedFocus;
@@ -71,7 +71,11 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
   }
 
   FutureOr<String?>? validate() async {
-    _error.value = await widget.validator.call(widget.value);
+    final validator = widget.validator;
+
+    if (validator == null) return null;
+
+    _error.value = await validator.call(widget.value);
 
     return _error.value;
   }
@@ -99,10 +103,11 @@ class FormFieldPlusState<T extends Object?> extends State<FormFieldPlus<T>> {
     return ValueListenableBuilder(
       valueListenable: _error,
       builder: (final context, final value, _) =>
-          widget.builder(widget.validator.forceErrorText ?? value),
+          widget.builder(widget.validator?.forceErrorText ?? value),
     );
   }
 
+  @protected
   void focusHandler() {
     final hasFocus = widget.observedFocus?.hasFocus ?? false;
 

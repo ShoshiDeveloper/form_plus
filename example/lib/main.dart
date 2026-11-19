@@ -42,22 +42,15 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
           builder: (context) => ListView(
             padding: const EdgeInsets.all(24),
             children: [
-              Text(
-                'Create an account',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              Text('Create an account', style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 24),
               FormFieldPlus<String>(
                 value: email,
                 autovalidateMode: FormPlusAutovalidateMode.onChanged,
                 validator: MultiValidator<String>(
                   validators: [
-                    const RequiredValidator<String>(
-                      validatorErrorText: 'Email is required',
-                    ),
-                    const EmailValidator(
-                      validatorErrorText: 'Enter a valid email',
-                    ),
+                    const RequiredValidator<String>(validatorErrorText: 'Email is required'),
+                    const EmailValidator(validatorErrorText: 'Enter a valid email'),
                   ],
                 ),
                 builder: (error) => _Field(
@@ -75,9 +68,7 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
                 autovalidateMode: FormPlusAutovalidateMode.onChanged,
                 validator: CallbackValidator<String>(
                   callback: (value) async {
-                    await Future<void>.delayed(
-                      const Duration(milliseconds: 250),
-                    );
+                    await Future<void>.delayed(const Duration(milliseconds: 250));
                     if (value == null || value.length < 8) {
                       return 'Use at least 8 characters';
                     }
@@ -89,19 +80,18 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
                   error: error,
                   child: TextField(
                     obscureText: true,
-                    onChanged: (value) => setState(() => password = value),
+                    onChanged: (value) => setState(() {
+                      password = value;
+                    }),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: () async {
-                  final isValid =
-                      await FormPlus.maybeOf(context)?.validate() ?? false;
+                  final isValid = await FormPlus.maybeOf(context)?.validate() ?? false;
                   setState(() {
-                    result = isValid
-                        ? 'Form is valid'
-                        : 'Please fix the errors above';
+                    result = isValid ? 'Form is valid' : 'Please fix the errors above';
                   });
                 },
                 child: const Text('Validate'),
@@ -123,11 +113,7 @@ class _ExampleFormPageState extends State<ExampleFormPage> {
 }
 
 class _Field extends StatelessWidget {
-  const _Field({
-    required this.label,
-    required this.error,
-    required this.child,
-  });
+  const _Field({required this.label, required this.error, required this.child});
 
   final String label;
   final String? error;
@@ -143,10 +129,7 @@ class _Field extends StatelessWidget {
         child,
         if (error != null) ...[
           const SizedBox(height: 4),
-          Text(
-            error!,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
+          Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
         ],
       ],
     );
