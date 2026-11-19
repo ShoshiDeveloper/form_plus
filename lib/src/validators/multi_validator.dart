@@ -9,7 +9,7 @@ class MultiValidator<T extends Object?> extends FormValidatorBase<T> {
     super.validatorErrorText,
   });
 
-  final List<FormValidatorBase> validators;
+  final List<FormValidatorBase<T>> validators;
 
   @override
   FutureOr<String?>? call(T? value) async {
